@@ -1,6 +1,7 @@
 # f_shared_prefs_template
 
-Cambiar authentication y controller
+Follow the call flow and fix the TODOs to make the tests pass.
+
 
 <img src="https://user-images.githubusercontent.com/4458129/178773695-b5a7aa7d-fce4-4e72-952a-384c0f6ce924.gif" width="300" />
 
