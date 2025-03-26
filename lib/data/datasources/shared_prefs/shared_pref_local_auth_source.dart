@@ -17,38 +17,39 @@ class SharedPrefLocalAuthSource implements ILocalAuthSource {
 
   @override
   Future<User> getUserFromEmail(email) async {
-    //TODO: implement getUserFromEmail, return a User object
-    // if no user is found, throw "User not found"
-    try {
-      final user = await _sharedPreferences.retrieveData<User>(email);
-      if (user == null) {
-        throw "User not found";
-      }
-      return user;
-    } catch (e) {
-      if (e == "User not found") {
-        rethrow;
-      }
-      throw e;
+    // Get the stored users as Map
+    final Map<String, dynamic>? usersMap =
+        await _sharedPreferences.retrieveData<Map<String, dynamic>>('users');
+
+    if (usersMap == null || !usersMap.containsKey(email)) {
+      throw "User not found";
     }
 
+    final userPassword = usersMap[email];
+    return User(email: email, password: userPassword);
   }
 
   @override
   Future<bool> isLogged() async {
-    //TODO: implement isLogged, return a boolean, default is false
     return await _sharedPreferences.retrieveData<bool>('logged') ?? false;
   }
 
   @override
   Future<void> signup(email, password) async {
-    //TODO: implement signup, stroe the email and pass on shared preferences
-    await _sharedPreferences.storeData(email, User(email: email, password: password));
+    // Retrieve existing users or create a new map
+    Map<String, dynamic> usersMap =
+        await _sharedPreferences.retrieveData<Map<String, dynamic>>('users') ??
+            {};
+
+    // Store the new user
+    usersMap[email] = password;
+
+    // Save the updated users map
+    await _sharedPreferences.storeData('users', usersMap);
   }
 
   @override
   Future<void> setLoggedIn() async {
-    //TODO: implement setLoggedIn, store a boolean on shared preferences
     await _sharedPreferences.storeData('logged', true);
   }
 }
